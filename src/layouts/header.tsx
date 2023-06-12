@@ -106,7 +106,7 @@ export const Header = () => {
               <h1 className=" text-2xl font-semibold">
                 <Link to={'/'}>
                   <div className="flex gab-1 cursor-pointer">
-                    <span className="font-Keepon text-[20px] md:text-[26px] text-lime-500 font-medium">
+                    <span className="font-Keepon text-[20px] md:text-[26px] text-[#8bc34a] font-medium">
                     Video<span className="text-yellow-400 ">HD</span>
                     </span>
                   </div>

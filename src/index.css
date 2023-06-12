@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -31,7 +33,7 @@
 @font-face {
   font-family: 'SukhumvitSet';
   src: local('SukhumvitSet'),
-    url('/fonts/SukhumvitSet-SemiBold.ttf') format('truetype');
+    url('/fonts/SukhumvitSet-Bold.ttf') format('truetype');
 }
 
 @font-face {
@@ -88,3 +90,4 @@ html {
   bottom: 0;
   background: linear-gradient(to bottom, theme('colors.body'), transparent 10%);
 }
+

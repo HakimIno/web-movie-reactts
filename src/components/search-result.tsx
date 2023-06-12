@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Film } from '../interfaces'
 import { Image } from './image'
-
+import { search } from '../api/imdb-api'
+import { useNavigate } from 'react-router-dom'
+import { tmdbImageSrc } from '../utils'
+import { useGlobalContext } from './app-container'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 interface Props {
   keyword: string
   goToSearchPage: Function
@@ -10,26 +14,23 @@ interface Props {
 export const SearchResult = (props: Props) => {
   const [items, setItems] = useState<Film[]>([])
 
-  const [totalItems, setTotalItems] = useState(4)
+  const [totalItem, setTotalItem] = useState(0)
 
-  const fetch = () => {
-    const arrs: Film[] = []
+  const searchTimeout = useRef<any>('')
 
-    for (let i = 0; i < 10; i++) {
-      arrs.push({
-        id: 1,
-        title: 'Kimsnow flex items-start p-1.5 rounded-lg hover:bg',
-        mediaType: "tv",
-        description: '',
-        posterPath:
-          'https://www.123-hd.com/wp-content/uploads/2023/02/Taxi-Driver-Season-2-2023-300x450.jpg',
-        coverPath: '',
-        genreIds: [1, 2, 3, 4, 5, 6],
-        seasons: [],
-      })
-    }
+  const globalContext = useGlobalContext()
 
-    setItems(arrs)
+  const navigate = useNavigate()
+
+  const fetch = async () => {
+    if (!props.keyword) return
+
+    clearTimeout(searchTimeout.current)
+    searchTimeout.current = setTimeout(async () => {
+      const res = await search(props.keyword)
+      setTotalItem(res.totalPages)
+      setItems(res.films)
+    }, 120)
   }
 
   useEffect(() => {
@@ -37,22 +38,37 @@ export const SearchResult = (props: Props) => {
   }, [props.keyword])
 
   return (
-    <div className="absolute top-[48px] left-0  right-0 rounded-md overflow-auto bg-[#313030] shadow-xl max-h-[480px] shadow-lg">
+    <div className="absolute top-[48px] left-0  right-0 rounded-md overflow-auto bg-[#313030]  max-h-[480px] shadow-lg">
       {items.map((film, i) => (
         <div
           key={i}
-          className="flex items-start p-1.5 rounded-lg hover:bg-[#242424] cursor-pointer"
+          className="flex  p-1.5 rounded-lg hover:bg-[#242424] py-2 cursor-pointer "
         >
           {/*  image */}
- 
-          <img src={film.posterPath} className="h-[135px] rounded-md" />
+
+          <LazyLoadImage
+            src={tmdbImageSrc(film.posterPath)}
+            width={150}
+           
+            className="rounded-md min-w-[150px] h-[200px] object-cover relative"
+            effect="blur"
+          />
+          {/* <img
+            src={tmdbImageSrc(film.posterPath)}
+            className="h-[205px]  rounded-md object-cover"
+          /> */}
           {/*   title and description */}
-          <div className="mx-3 truncate ">
+          <div className="px-3 truncate ">
             <p className="text-base truncate">{film.title}</p>
             <ul className=" flex flex-wrap gap-x-1.5 text-xs opacity-[0.7]">
               {film.genreIds.map((id, i) => (
-                <li key={i} className="">
-                  item {i}
+                <li key={i}>
+                  {
+                    globalContext.genres[film.mediaType].find(
+                      (g) => g.id === id
+                    )?.name
+                  }{' '}
+                  {i !== film.genreIds.length - 1 ? ',' : ''}
                 </li>
               ))}
             </ul>
@@ -60,10 +76,10 @@ export const SearchResult = (props: Props) => {
         </div>
       ))}
 
-      {totalItems > 3 ? (
+      {totalItem > 3 ? (
         <button
           onClick={() => props.goToSearchPage()}
-          className="px-3 py-0.1   w-full hover:text-lime-500 sticky shadow-lg"
+          className="px-3 py-0.1   w-full hover:text-lime-500 sticky shadow-lg mt-8"
         >
           ดูเพิ่มเติม
         </button>

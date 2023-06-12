@@ -5,7 +5,7 @@ export const Container = (props: CustomComponentProps) => {
   return (
     <div
       className={mergeClassName(
-        'px-6 py-3 max-w-screen-xl mx-auto',
+        'px-6 py-3 max-w-screen-2xl mx-auto',
         props.className
       )}
     >

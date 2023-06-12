@@ -8,7 +8,7 @@ interface Props extends CustomComponentProps {
 export const Section = (props: Props) => {
   return (
     <Container className={props.className}>
-      {props.title ? <h1 className="text-xl py-1.5">{props.title}</h1> : ''}
+      {props.title ? <h1 className="text-base md:text-xl py-1.5">{props.title}</h1> : ''}
       {props.children}
     </Container>
   )
